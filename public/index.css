@@ -1,0 +1,15 @@
+nav {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.price {
+  font-size: 2rem;
+}
+.title {
+  color: black !important;
+}
+.btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

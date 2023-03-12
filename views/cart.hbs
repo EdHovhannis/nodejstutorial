@@ -1,0 +1,47 @@
+<div id='cart'>
+  {{#if cart.courses.length}}
+    <h1>Cart</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>
+            Price
+          </th>
+          <th>
+            Amount
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each cart.courses}}
+          <tr>
+            <td>
+              <img src={{img}} alt={{title}} style='width: 32px;' />
+            </td>
+            <td>{{title}}</td>
+            <td>{{price}}</td>
+            <td>{{count}}</td>
+            <td>
+              <span
+                style='color: red; cursor: pointer;'
+                class='js-remove'
+                data-id={{id}}
+              >Delete</span>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <p>
+      <span
+        style='font-size: 2rem; font-weigth: 600; font-style: italic;'
+      >Total:</span>
+      <span class='price'>{{cart.price}}</span></p>
+  {{else}}
+    <h1>No orders yet</h1>
+  {{/if}}
+</div>
