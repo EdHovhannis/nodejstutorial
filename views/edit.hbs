@@ -1,5 +1,6 @@
 <h1>Edit a new Course</h1>
 <form class='col s12' action='/courses/edit' method='post'>
+  <input type='hidden' name='_csrf' value='{{csrf}}' />
 
   <div class='row'>
     <div class='input-field col s6'>
@@ -58,6 +59,7 @@
 </form>
 
 <form action='/courses/remove' method='post'>
+  <input type='hidden' name='_csrf' value='{{csrf}}' />
   <input type='hidden' name='id' value={{course.id}} />
   <button type='submit' class='btn btn-primary red accent-4'>
     Delete Course

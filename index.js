@@ -4,24 +4,46 @@ const handlebars = require('handlebars');
 const {
   allowInsecurePrototypeAccess,
 } = require('@handlebars/allow-prototype-access');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config();
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const csurf = require('csurf');
+const flash = require('connect-flash');
 const addRouter = require('./routes/add');
 const homeRouter = require('./routes/home');
 const coursesRouter = require('./routes/courses');
 const cartRouter = require('./routes/cart');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config();
+const orderRouter = require('./routes/orders');
+const authRouter = require('./routes/auth');
+
+const varMiddleWar = require('./middleware/variables');
+const userMiddleWare = require('./middleware/user');
+
 const app = express();
-
-app.use((req, res, next) => {
-  res.append('Access-Control-Allow-Origin', ['*']);
-  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.append('Access-Control-Allow-Headers', 'Content-Type');
-  next();
+const DBconnect =
+  'mongodb+srv://edocrach32:vpUjnGEdj9TOSv1y@restapp.dcyndln.mongodb.net/?retryWrites=true&w=majority';
+const store = new MongoDBStore({
+  collection: 'user-session',
+  uri: DBconnect,
 });
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(
+  session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+    store,
+  })
+);
+
+app.use(csurf());
+app.use(varMiddleWar);
+app.use(userMiddleWare);
+app.use(flash());
 
 const hbs = exphbs.create({
   extname: '.hbs',
@@ -36,27 +58,15 @@ app.use('/', homeRouter);
 app.use('/add', addRouter);
 app.use('/courses', coursesRouter);
 app.use('/cart', cartRouter);
+app.use('/orders', orderRouter);
+app.use('/auth', authRouter);
 
 async function start() {
-  console.log(process.env.PORT);
   const port = process.env.PORT || 3000;
-  const DBconnect =
-    'mongodb+srv://edocrach32:vpUjnGEdj9TOSv1y@restapp.dcyndln.mongodb.net/?retryWrites=true&w=majority';
-  const DB =
-    'mongodb://' +
-    process.env.MONGO_LOGIN +
-    ':' +
-    process.env.MONGO_PASSWORD +
-    '@' +
-    process.env.MONGO_HOST +
-    ':' +
-    process.env.MONGO_PORT +
-    '/' +
-    process.env.MONGO_AUTHDATABASE;
-  console.log(DB);
+
   try {
     await mongoose.connect(
-      DB,
+      DBconnect,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,

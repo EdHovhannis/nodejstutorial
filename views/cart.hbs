@@ -1,5 +1,5 @@
 <div id='cart'>
-  {{#if cart.courses.length}}
+  {{#if courses.length}}
     <h1>Cart</h1>
     <table>
       <thead>
@@ -17,7 +17,7 @@
       </thead>
 
       <tbody>
-        {{#each cart.courses}}
+        {{#each courses}}
           <tr>
             <td>
               <img src={{img}} alt={{title}} style='width: 32px;' />
@@ -30,6 +30,7 @@
                 style='color: red; cursor: pointer;'
                 class='js-remove'
                 data-id={{id}}
+                data-csrf={{@root.csrf}}
               >Delete</span>
             </td>
           </tr>
@@ -40,8 +41,12 @@
       <span
         style='font-size: 2rem; font-weigth: 600; font-style: italic;'
       >Total:</span>
-      <span class='price'>{{cart.price}}</span></p>
+      <span class='price'>{{price}}</span></p>
+    <form action='/orders' method='post'>
+      <input type='hidden' name='_csrf' value='{{csrf}}' />
+      <button type='submit' class='btn btn-primary'>Order</button>
+    </form>
   {{else}}
-    <h1>No orders yet</h1>
+    <h1>Cart is empty</h1>
   {{/if}}
 </div>

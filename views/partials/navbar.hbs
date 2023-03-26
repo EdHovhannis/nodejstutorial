@@ -11,7 +11,6 @@
           <a href='/'>Main</a>
         </li>
       {{/if}}
-
       {{#if isCourses}}
         <li class='active'>
           <a href='/courses'>Courses</a>
@@ -21,25 +20,50 @@
           <a href='/courses'>Courses</a>
         </li>
       {{/if}}
+      {{#if isLoggined}}
+        {{#if isAdd}}
+          <li class='active'>
+            <a href='/add'>Add Course</a>
+          </li>
+        {{else}}
+          <li>
+            <a href='/add'>Add Course</a>
+          </li>
+        {{/if}}
 
-      {{#if isAdd}}
-        <li class='active'>
-          <a href='/add'>Add Course</a>
+        {{#if isCart}}
+          <li class='active'>
+            <a href='/cart'>Cart</a>
+          </li>
+        {{else}}
+          <li>
+            <a href='/cart'>Cart</a>
+          </li>
+        {{/if}}
+
+        {{#if isOrders}}
+          <li class='active'>
+            <a href='/orders'>Orders</a>
+          </li>
+        {{else}}
+          <li>
+            <a href='/orders'>Orders</a>
+          </li>
+        {{/if}}
+
+        <li>
+          <a href='/auth/logout'>Logout</a>
         </li>
       {{else}}
-        <li>
-          <a href='/add'>Add Course</a>
-        </li>
-      {{/if}}
-
-      {{#if isAdd}}
-        <li class='active'>
-          <a href='/cart'>Cart</a>
-        </li>
-      {{else}}
-        <li>
-          <a href='/cart'>Cart</a>
-        </li>
+        {{#if isAuth}}
+          <li class='active'>
+            <a href='/auth/login#login'>Auth</a>
+          </li>
+        {{else}}
+          <li>
+            <a href='/auth/login#login'>Auth</a>
+          </li>
+        {{/if}}
       {{/if}}
 
     </ul>

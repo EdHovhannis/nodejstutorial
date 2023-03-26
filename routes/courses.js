@@ -2,11 +2,12 @@ const { Router } = require('express');
 const Courses = require('../models/course');
 const path = require('path');
 const mongoose = require('mongoose');
+const protectRoute = require('../middleware/auth');
 
 const router = Router();
 
 router.get('/', async (req, res) => {
-  const courses = await Courses.find();
+  const courses = await Courses.find().populate('userId', 'name');
   res.render(path.join('..', 'views', 'courses'), {
     title: 'Courses page',
     isCourses: true,
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', protectRoute, async (req, res) => {
   if (req.query.allow === undefined || req.query.allow === 'false') {
     return res.redirect('/');
   }
@@ -42,13 +43,13 @@ router.get('/:id/edit', async (req, res) => {
   });
 });
 
-router.post('/edit', async (req, res) => {
+router.post('/edit', protectRoute, async (req, res) => {
   const data = req.body;
   await Courses.findByIdAndUpdate(data.id, data);
   return res.redirect('/courses');
 });
 
-router.post('/remove', async (req, res) => {
+router.post('/remove', protectRoute, async (req, res) => {
   const { id } = req.body;
   try {
     await Courses.findByIdAndRemove(id);

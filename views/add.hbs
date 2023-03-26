@@ -1,5 +1,6 @@
 <h1>Add a new Course</h1>
 <form class='col s12' action='/add' method='post'>
+  <input type='hidden' name='_csrf' value='{{@root.csrf}}' />
 
   <div class='row'>
     <div class='input-field col s6'>

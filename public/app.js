@@ -14,7 +14,13 @@ if ($cart) {
   document.addEventListener('click', (event) => {
     if (event.target.classList.contains('js-remove')) {
       const id = event.target.dataset.id;
-      fetch('/cart/remove/' + id, { method: 'delete' })
+      const csrf = event.target.dataset.csrf;
+      fetch('/cart/remove/' + id, {
+        method: 'delete',
+        headers: {
+          'X-CSRF-Token': csrf,
+        },
+      })
         .then((response) => {
           return response.json();
         })
@@ -28,16 +34,16 @@ if ($cart) {
                     <img src=${course.img} alt=${course.title} style='width: 32px;' />
                   </td>
                   <td>${course.title}</td>
-                  <td>${course.price}</td>   
-                  <td>${course.count}</td> 
+                  <td>${course.price}</td>
+                  <td>${course.count}</td>
                   <td>
                     <span
                       style='color: red; cursor: pointer;'
                       class='js-remove'
-                      data-id=${course.id} 
+                      data-id=${course._id}  
                     >Delete</span>
                   </td>
-              </tr> 
+              </tr>
             `
               )
               .join('');
@@ -50,3 +56,10 @@ if ($cart) {
     }
   });
 }
+const dateinOrder = document.querySelectorAll('.date');
+
+dateinOrder.forEach((node) => {
+  node.textContent = new Date(node.textContent).toLocaleDateString();
+});
+
+M.Tabs.init(document.querySelectorAll('.tabs'));

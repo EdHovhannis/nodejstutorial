@@ -18,11 +18,14 @@
 
           <div class='card-action btns'>
             <a href='/courses/{{_id}}' target='_blank'>Course details</a>
-            <a href='/courses/{{_id}}/edit?allow=true'>Edit course</a>
-            <form action='/cart/add' method='post'>
-              <input type='hidden' name='id' value={{id}} />
-              <button type='submit' class='btn btn-primary'>Add to Cart</button>
-            </form>
+            {{#if @root.isLoggined}}
+              <a href='/courses/{{_id}}/edit?allow=true'>Edit course</a>
+              <form action='/cart/add' method='post'>
+                <input type='hidden' name='_csrf' value='{{@root.csrf}}' />
+                <input type='hidden' name='id' value={{id}} />
+                <button type='submit' class='btn btn-primary'>Add to Cart</button>
+              </form>
+            {{/if}}
           </div>
 
         </div>
