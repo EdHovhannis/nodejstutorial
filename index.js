@@ -20,10 +20,11 @@ const authRouter = require('./routes/auth');
 
 const varMiddleWar = require('./middleware/variables');
 const userMiddleWare = require('./middleware/user');
+const { keys } = require('./keys');
 
 const app = express();
-const DBconnect =
-  'mongodb+srv://edocrach32:vpUjnGEdj9TOSv1y@restapp.dcyndln.mongodb.net/?retryWrites=true&w=majority';
+const DBconnect = process.env.DB_URI || keys.DB_URI;
+
 const store = new MongoDBStore({
   collection: 'user-session',
   uri: DBconnect,
@@ -32,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(
   session({
-    secret: 'keyboard cat',
+    secret: process.env.secret || keys.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
