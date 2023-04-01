@@ -3,7 +3,6 @@ const Courses = require('../models/course');
 const path = require('path');
 const mongoose = require('mongoose');
 const protectRoute = require('../middleware/auth');
-
 const router = Router();
 
 router.get('/', async (req, res) => {

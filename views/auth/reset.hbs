@@ -1,0 +1,23 @@
+<div class='row' style='margin-top: 32px;'>
+  <h1>Reset password</h1>
+  <form action='/auth/reset' method='post' style='margin-top: 32px;'>
+    <input type='hidden' name='_csrf' value='{{csrf}}' />
+
+    <input
+      placeholder='email'
+      type='email'
+      class='validate'
+      name='email'
+      required
+      autocomplete
+    />
+    <span class='helper-text' data-error='Insert an email'></span>
+    <div>
+      <button
+        type='submit'
+        class='btn btn-primary'
+        style='margin-top: 32px;'
+      >Reset</button>
+    </div>
+  </form>
+</div>
