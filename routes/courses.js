@@ -6,12 +6,17 @@ const protectRoute = require('../middleware/auth');
 const router = Router();
 
 router.get('/', async (req, res) => {
-  const courses = await Courses.find().populate('userId', 'name');
-  res.render(path.join('..', 'views', 'courses'), {
-    title: 'Courses page',
-    isCourses: true,
-    courses,
-  });
+  try {
+    const courses = await Courses.find().populate('userId', 'name');
+    res.render(path.join('..', 'views', 'courses'), {
+      title: 'Courses page',
+      isCourses: true,
+      userId: req.user ? req.user._id.toString() : null,
+      courses,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.get('/:id', async (req, res) => {
@@ -33,13 +38,21 @@ router.get('/:id/edit', protectRoute, async (req, res) => {
   if (req.query.allow === undefined || req.query.allow === 'false') {
     return res.redirect('/');
   }
-  const { id } = req.params;
-  const course = await Courses.findById(id);
-  res.render(path.join('..', 'views', 'edit'), {
-    layout: 'main',
-    title: 'Edit page',
-    course,
-  });
+  try {
+    const { id } = req.params;
+    const course = await Courses.findById(id);
+    if (course.userId.toString() != req.user._id.toString()) {
+      return res.redirect('/courses');
+    }
+
+    res.render(path.join('..', 'views', 'edit'), {
+      layout: 'main',
+      title: 'Edit page',
+      course,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.post('/edit', protectRoute, async (req, res) => {
@@ -51,7 +64,7 @@ router.post('/edit', protectRoute, async (req, res) => {
 router.post('/remove', protectRoute, async (req, res) => {
   const { id } = req.body;
   try {
-    await Courses.findByIdAndRemove(id);
+    await Courses.deleteOne({ _id: id, userId: req.user._id });
     return res.redirect('/courses');
   } catch (err) {
     console.log(err);

@@ -1,4 +1,7 @@
 <h1>Add a new Course</h1>
+{{#if error}}
+  <p class='alert'>{{error}}</p>
+{{/if}}
 <form class='col s12' action='/add' method='post'>
   <input type='hidden' name='_csrf' value='{{@root.csrf}}' />
 

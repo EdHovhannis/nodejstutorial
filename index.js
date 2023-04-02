@@ -17,6 +17,7 @@ const coursesRouter = require('./routes/courses');
 const cartRouter = require('./routes/cart');
 const orderRouter = require('./routes/orders');
 const authRouter = require('./routes/auth');
+const { err404 } = require('./middleware/404');
 
 const varMiddleWar = require('./middleware/variables');
 const userMiddleWare = require('./middleware/user');
@@ -50,6 +51,7 @@ const hbs = exphbs.create({
   extname: '.hbs',
   defaultLayout: 'main',
   handlebars: allowInsecurePrototypeAccess(handlebars),
+  helpers: require('./helpers/compareids'),
 });
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
@@ -61,6 +63,8 @@ app.use('/courses', coursesRouter);
 app.use('/cart', cartRouter);
 app.use('/orders', orderRouter);
 app.use('/auth', authRouter);
+
+app.use(err404);
 
 async function start() {
   const port = process.env.PORT || 3000;

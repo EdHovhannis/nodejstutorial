@@ -5,6 +5,8 @@ const bcryptjs = require('bcryptjs');
 const router = Router();
 const { etherealemail } = require('../helpers/emailhelper');
 const crypto = require('crypto');
+const { validationResult } = require('express-validator');
+const { registervalidator } = require('../helpers/validator');
 
 router.get('/login', async (req, res) => {
   res.render(path.join('..', 'views/auth', 'login'), {
@@ -45,29 +47,27 @@ router.post('/login', async (req, res) => {
   } catch (err) {}
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', registervalidator, async (req, res) => {
   try {
-    const { email, name, password, confirm } = req.body;
-    const candidate = await User.findOne({ email });
-
-    if (candidate) {
-      req.flash('regerror', 'user is already exist');
-      return res.redirect('/auth/login#register');
-    } else {
-      const hash = await bcryptjs.hash(password, 10);
-      const user = new User({
-        email,
-        name,
-        password: hash,
-        confirm,
-      });
-      await user.save();
-      res.redirect('/auth/login#login');
-      const subject = 'Hello ✔';
-      const text = 'Hello world?';
-      const html = '<b>Hello world?</b>';
-      etherealemail({ subject, text, html });
+    const { email, name, password } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      req.flash('regerror', errors.array()[0].msg);
+      return res.status(421).redirect('/auth/login#register');
     }
+
+    const hash = await bcryptjs.hash(password, 10);
+    const user = new User({
+      email,
+      name,
+      password: hash,
+    });
+    await user.save();
+    res.redirect('/auth/login#login');
+    const subject = 'Hello ✔';
+    const text = 'Hello world?';
+    const html = '<b>Hello world?</b>';
+    etherealemail({ subject, text, html });
   } catch (err) {
     console.log(err);
   }
@@ -131,6 +131,7 @@ router.get('/password/:token', async (req, res) => {
     console.log(err);
   }
 });
+
 router.post('/password', async (req, res) => {
   try {
     const { userId, token, password } = req.body;

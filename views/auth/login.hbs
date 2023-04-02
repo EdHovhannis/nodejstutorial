@@ -48,7 +48,12 @@
     </form>
   </div>
   <div id='register' class='col s12'>
-    <form action='/auth/register' method='post' style='margin-top: 32px;'>
+    <form
+      action='/auth/register'
+      method='post'
+      style='margin-top: 32px;'
+      novalidate
+    >
       <input type='hidden' name='_csrf' value='{{csrf}}' />
 
       <input
